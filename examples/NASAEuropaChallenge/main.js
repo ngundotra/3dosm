@@ -76,7 +76,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
   var OSMTagged = new OSMLayer(configurationOSMTagged, {});
 
   var configurationOSMBuildings = {
-    interiorColor: new WorldWind.Color(1.0, 1.0, 1.0, 1.0),
+    interiorColor: new WorldWind.Color(1.0, 0.0, 0.0, 1.0),
     applyLighting: true,
     extrude: false,
     altitude: {},
@@ -111,7 +111,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
           var boundingBoxOfShape = [new WorldWind.Location(latMin, longMin), new WorldWind.Location(latMax, longMin), new WorldWind.Location(latMax, longMax), new WorldWind.Location(latMin, longMax)];
 
           var attributes = new WorldWind.ShapeAttributes(null);
-          attributes.outlineColor = WorldWind.Color.WHITE;
+          attributes.outlineColor = WorldWind.Color.BLUE;
           attributes.outlineWidth = 2.0;
           attributes.interiorColor = new WorldWind.Color(1, 1, 1, 0.1);
 
@@ -203,6 +203,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
         $("#inputTextHeatmapThresholds").prop("disabled", true);
     });
 
+	// CheckBox
     $("#dataSourceOSMBuildings input[type='radio']").change(function() {
       if($("#inputRadioByBoundingBox").prop("checked"))
         $("#inputFile").prop("disabled", true);
@@ -210,6 +211,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
         $("#inputFile").prop("disabled", false);
     });
 
+	
     $("#inputFile").change(function(event) {
 
       $(".ldsEclipse").css("display", "block");
