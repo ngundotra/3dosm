@@ -81,7 +81,8 @@ define(['libraries/WebWorldWind/src/WorldWind',
     extrude: false,
     altitude: {},
     altitudeMode: WorldWind.RELATIVE_TO_GROUND,
-    heatmap: {}
+    heatmap: {},
+    eui: false
   };
   var OSMBuildings = new OSMBuildingLayer(configurationOSMBuildings, {});
 
@@ -174,6 +175,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
       if($(this).prop("checked")) {
         $("#extrusionSettings input[type='radio']").prop("disabled", false);
         $("#inputCheckboxHeatmap").prop("disabled", false);
+        $("#inputCheckboxHeatmapEUI").prop("disabled", false);
       }
       else {
         $("#extrusionSettings *").prop("disabled", true);
@@ -197,21 +199,30 @@ define(['libraries/WebWorldWind/src/WorldWind',
     });
 
     $("#inputCheckboxHeatmap").change(function() {
-      if($(this).prop("checked"))
+      if($(this).prop("checked")) {
         $("#inputTextHeatmapThresholds").prop("disabled", false);
-      else
+        $("#inputCheckboxHeatmapEUI").prop("disabled", false);
+      }
+      else {
         $("#inputTextHeatmapThresholds").prop("disabled", true);
+        $("#inputCheckboxHeatmapEUI").prop("disabled", true);
+      }
     });
 
 	// CheckBox
     $("#dataSourceOSMBuildings input[type='radio']").change(function() {
-      if($("#inputRadioByBoundingBox").prop("checked"))
+      if($("#inputRadioByBoundingBox").prop("checked")) {
         $("#inputFile").prop("disabled", true);
+        $("#inputCheckboxHeatmapEUI").prop("disabled", true);
+      }
       else
+      {
         $("#inputFile").prop("disabled", false);
+        $("#inputCheckboxHeatmapEUI").prop("disabled", false);
+      }
     });
 
-	
+    // InputFile	
     $("#inputFile").change(function(event) {
 
       $(".ldsEclipse").css("display", "block");
@@ -237,6 +248,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
       dataSize = event.target.files[0].size;
     });
 
+	  // Providing BBOX for OSM data
     $("#buttonGoOSMTagType").click(function() {
       if ($.isEmptyObject(source)) {
         alert ("Please specify the source of the layer.");
@@ -338,6 +350,11 @@ define(['libraries/WebWorldWind/src/WorldWind',
           thresholds.sort(sortNumber);
           configurationOSMBuildings.heatmap.thresholds = thresholds;
         }
+        if ($('#inputCheckboxHeatmapEUI').prop("checked")) {
+          console.log("\t\t\tHEYO WE MADE IT - heatbox checked");
+          configurationOSMBuildings.heatmap.eui = true;
+        }
+
       }
 
       $.when(OSMBuildings.load()).then(function() {
@@ -352,8 +369,12 @@ define(['libraries/WebWorldWind/src/WorldWind',
         }
         else {
           OSMBuildings.add(worldWindow);
-          if (OSMBuildings.source.type == "GeoJSONData")
+          if (OSMBuildings.source.type == "GeoJSONData") {
+		console.log("OSMBuildings added, and zoomed into :)");
             OSMBuildings.zoom();
+            worldWindow.redraw();
+          }
+          console.log("Layers of world window:", worldWindow.layers);
         }
       });
     });
