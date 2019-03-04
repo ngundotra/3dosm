@@ -15,6 +15,10 @@ define([], function () {
      this._properties = properties;
      this._altitude = 15;
      this._color = null;
+     // Added for our visualization purposes
+     if (properties.eui) {
+      this._eui = properties["eui"];
+     }
    };
 
    Object.defineProperties (BuildingShape.prototype, {
@@ -62,22 +66,29 @@ define([], function () {
   BuildingShape.prototype.setColor = function (configuration) {
     var numberOfThresholds = configuration.heatmap.thresholds.length;
     var heat = 0.5/(numberOfThresholds-2);
+    var to_cmp = configuration.heatmap.eui ? this._eui : this._altitude;
+    console.log("\t\tconfig.eui is:", configuration.heatmap.eui, 'to_cmp is:', to_cmp);
 
-    if (configuration.attributes.interiorColor.red < 0.5) {
-      for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
-        if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1]) {
-          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+heat*thresholdIndex, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, configuration.attributes.interiorColor.alpha);
-          configuration.attributes.outlineColor = configuration.attributes.interiorColor; // Needed in case triangulation is not used.
-        }
-      }
+    // if (configuration.attributes.interiorColor.red < 0.5) {
+    //   for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
+    //     if (to_cmp > configuration.heatmap.thresholds[thresholdIndex] && to_cmp <= configuration.heatmap.thresholds[thresholdIndex+1]) {
+    //       configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+heat*thresholdIndex, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, configuration.attributes.interiorColor.alpha);
+    //       configuration.attributes.outlineColor = configuration.attributes.interiorColor; // Needed in case triangulation is not used.
+    //     }
+    //   }
+    // }
+    // else {
+    for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
+      if (to_cmp > configuration.heatmap.thresholds[thresholdIndex] && to_cmp <= configuration.heatmap.thresholds[thresholdIndex+1])
+        configuration.attributes.interiorColor = new WorldWind.Color(
+            configuration.attributes.interiorColor.red-heat*(numberOfThresholds-thresholdIndex), 
+            configuration.attributes.interiorColor.green-heat*(numberOfThresholds-thresholdIndex),
+            configuration.attributes.interiorColor.blue-heat*(numberOfThresholds-thresholdIndex),
+            configuration.attributes.interiorColor.alpha
+        );
+        configuration.attributes.outlineColor = configuration.attributes.interiorColor; // Needed in case triangulation is not used.
     }
-    else {
-      for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
-        if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
-          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-heat*(numberOfThresholds-thresholdIndex), configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, configuration.attributes.interiorColor.alpha);
-          configuration.attributes.outlineColor = configuration.attributes.interiorColor; // Needed in case triangulation is not used.
-      }
-    }
+    // }
     this._color = configuration.attributes.interiorColor;
   };
 

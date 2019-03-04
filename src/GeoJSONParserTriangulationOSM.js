@@ -14,6 +14,7 @@ define(['src/GeoJSONParserTriangulation',
    * @param {String} dataSource The data source in GeoJSON format. Can be a string or a URL for the data.
    */
   var GeoJSONParserTriangulationOSM = function (dataSource) {
+    // Inheritance sorta happens here, huh
     GeoJSONParserTriangulation.call(this, dataSource);
   };
 
@@ -33,6 +34,7 @@ define(['src/GeoJSONParserTriangulation',
    * @throws {ArgumentError} If the specified geometry is null or undefined.
    */
   GeoJSONParserTriangulationOSM.prototype.addRenderablesForPolygon = function (layer, geometry, properties) {
+    console.log("\tParserTriangulationOSM addPolygon renderable method called");
     if (!layer) {
       throw new ArgumentError(
         Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForPolygon", "missingLayer")
@@ -82,6 +84,7 @@ define(['src/GeoJSONParserTriangulation',
    * @throws {ArgumentError} If the specified geometry is null or undefined.
    */
   GeoJSONParserTriangulationOSM.prototype.addRenderablesForMultiPolygon = function (layer, geometry, properties) {
+    console.log("\tParserTriangulationOSM multipolygon add renderables called");
     if (!layer) {
       throw new ArgumentError(
         Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForMultiPolygon", "missingLayer")

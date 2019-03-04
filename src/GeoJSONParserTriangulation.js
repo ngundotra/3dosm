@@ -70,6 +70,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    * @throws {ArgumentError} If the specified geometry is null or undefined.
    */
   GeoJSONParserTriangulation.prototype.addRenderablesForMultiPolygon = function (layer, geometry, properties) {
+    console.log("Entered MultiPolygon detection!");
     if (!layer) {
       throw new ArgumentError(
         Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForMultiPolygon", "missingLayer")

@@ -136,6 +136,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     var polygons, coordinates;
 
     this._cache.putEntry("entriesCount", {entriesCount: 0}, this.roughSizeOfObject(0));
+    console.log("Cache run!");
 
     featuresLoop:
     for (var featureIndex = 0; featureIndex < this.data.features.length; featureIndex++) {
@@ -173,6 +174,8 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
             }
           }
         }
+      } else {
+        console.log("Data[featuredIndex].geometry type not recognized", this.data[featureIndex].geometry);
       }
     }
 

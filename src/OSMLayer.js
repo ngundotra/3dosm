@@ -1,6 +1,7 @@
 /**
  * @exports OSMLayer
  */
+// const fs = require('fs');
 define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
         'libraries/WebWorldWind/src/error/ArgumentError',
         'libraries/WebWorldWind/src/util/Logger',
@@ -209,6 +210,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       }
     }
 
+    console.log("Bbox found!")
     return boundingBox;
   };
 
@@ -219,12 +221,17 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    * @throws {ArgumentError} If the source definition is wrong.
    */
   OSMLayer.prototype.load = function () {
+    console.log("Source type:", this.source.type, typeof(this.source));
     if (this.source.type == "boundingBox" && this.source.coordinates)
       return this.loadByBoundingBox();
-    else if (this.source.type == "GeoJSONFile" && this.source.path)
+    else if (this.source.type == "GeoJSONFile" && this.source.path) {
+      console.log("Loading by GeoJSON file!!!");
       return this.loadByGeoJSONFile();
-    else if (this.source.type == "GeoJSONData" && this.source.data)
+    }
+    else if (this.source.type == "GeoJSONData" && this.source.data) {
+      console.log("Loading by GeoJSON data(?)");
       return this.loadByGeoJSONData();
+    }
     else {
       throw new ArgumentError(
         Logger.logMessage(Logger.LEVEL_SEVERE, "OSMLayer", "load", "The source definition of the layer is wrong.")
@@ -253,7 +260,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       data += this._type[typeIndex] + '[' + this._tag + '](' + this.source.coordinates[1] + ',' + this.source.coordinates[0] + ',' + this.source.coordinates[3] + ',' + this.source.coordinates[2] + '); ';
     }
     data += '); out body; >; out skel qt;';
-    // console.log(data);
+    console.log(data);
 
     return $.ajax({
       url: 'http://overpass-api.de/api/interpreter',
@@ -262,6 +269,14 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       success: function(dataOverpass) {
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
         _self._data = dataOverpassGeoJSON;
+        // fs.writeFile("3dosmexample.txt", dataOverpassGeoJSON,function(err) {
+        //   if(err) {
+        //       return console.log(err);
+        //   }
+      
+        //   console.log("The file was saved!");
+        // });  
+        console.log("Proper data looks like:", _self.data);
         if (_self._dataSize == 0)
           _self._dataSize = _self.roughSizeOfObject(_self._data);
       },
@@ -281,6 +296,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    */
   OSMLayer.prototype.loadByGeoJSONFile = function () {
     var _self = this;
+    console.log("\t***loadByGeoJSONFile called***");
 
     return $.ajax({
       beforeSend: function(xhr) {
@@ -312,6 +328,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    */
   OSMLayer.prototype.loadByGeoJSONData = function () {
     this._data = this.source.data;
+    console.log("GeoJSONData:", this._data);
     if (this._dataSize == 0)
       this._dataSize = this.roughSizeOfObject(this._data);
   };
@@ -324,10 +341,13 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     this._worldWindow = worldWindow;
     var _self = this;
     $.when(_self.load()).then(function() {
+      console.log("\t\tOSMLayer loading to worldwindox")
       var OSMLayer = new WorldWind.RenderableLayer("OSMLayer");
+      console.log("\t\tCalling the WorldWind GeoJSONParser object on our data:");
       var OSMLayerGeoJSON = new GeoJSONParser(JSON.stringify(_self._data));
       OSMLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMLayer);
       _self._worldWindow.addLayer(OSMLayer);
+      console.log("\t\tWorldWindow has loaded our data");
     });
   };
 
