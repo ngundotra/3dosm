@@ -46,11 +46,12 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     var configuration = this.shapeConfigurationCallback(geometry, properties);
     var boundaries = geometry.coordinates;
     var OSMBuildingPolygon = new BuildingShape(properties);
-    OSMBuildingPolygon.setAltitude(configuration);
-    var altitude = OSMBuildingPolygon.altitude;
+    console.log("PROPERTIES (pre shape):", properties);
     if (configuration.extrude && configuration.heatmap.enabled)
       OSMBuildingPolygon.setColor(configuration);
 
+    OSMBuildingPolygon.setAltitude(configuration);
+    var altitude = OSMBuildingPolygon.altitude;
     if (!this.crs || this.crs.isCRSSupported()) {
       for (var boundaryIndex = 0; boundaryIndex < boundaries.length; boundaryIndex++) {
         var points = boundaries[boundaryIndex];

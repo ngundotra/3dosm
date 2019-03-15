@@ -1,3 +1,20 @@
+# THIS IS A FORK OF THE 3D OSM PROJECT
+
+The point is to visualize results from the output of models on building footprints.
+
+
+
+
+
+
+
+
+
+
+
+# THE ORIGINAL README FOLLOWS FROM HERE
+
+
 # 2017 GSoC project "3D OSM Plugin API"
 
 The goal of this project is to create a plugin API to display OpenStreetMap (OSM) data on <a href="https://github.com/NASAWorldWind/WebWorldWind">NASA Web WorldWind</a> virtual globe in three dimensions. The API fetches the OSM data in real time based on a bounding box, or uses a local file or the data itself in GeoJSON format. The project focuses on the performance of the visualization of 3D OSM buildings, and for this purpose creates triangle meshes based on the footprint available in OSM database. Height to the buildings can be assigned using the OSM database, a property in a GeoJSON file or an arbitrary value. The API can also create a heatmap based on the heights of the buildings. The API also offers caching and sectorizing (tiling) to improve the performance.
