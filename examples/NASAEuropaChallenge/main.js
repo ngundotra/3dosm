@@ -307,14 +307,17 @@ define(['libraries/WebWorldWind/src/WorldWind',
       $("#inputRadioByBoundingBox, #inputRadioByGeoJSONData").prop("checked", false);
 
       OSMBuildings.source = source;
-      source = {};
-      OSMBuildings.boundingBox = boundingBox;
-      boundingBox = [];
       OSMBuildings.dataSize = 0;
       if (OSMBuildings.source.type == "GeoJSONData") {
         OSMBuildings.dataSize = dataSize;
+        configurationOSMBuildings.heatmap.max = source.data.max_val;
+        configurationOSMBuildings.heatmap.min = source.data.min_val;
+        console.log("\t\t\tMAX:", source.data.max_val, "MIN:", source.data.min_val);
         dataSize = 0;
       }
+      source = {};
+      OSMBuildings.boundingBox = boundingBox;
+      boundingBox = [];
 
       /** color settings **/
       var rgba = $("#colorpickerBuildings").colorpicker("getValue");
